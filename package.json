@@ -16,5 +16,8 @@
   "bugs": {
     "url": "https://github.com/Jm-Correia/studies-reactjs/issues"
   },
-  "homepage": "https://github.com/Jm-Correia/studies-reactjs#readme"
+  "homepage": "https://github.com/Jm-Correia/studies-reactjs#readme",
+  "devDependencies": {
+    "git-commit-msg-linter": "^3.2.8"
+  }
 }
