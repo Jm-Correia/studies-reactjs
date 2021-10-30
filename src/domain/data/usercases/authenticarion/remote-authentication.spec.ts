@@ -28,6 +28,12 @@ const mokeAuthentication = (): AuthenticationParams => {
   }
 }
 
+const mokeHttpResult = (): AccountModel => {
+  return {
+    acessToken: faker.datatype.uuid()
+  }
+}
+
 describe('RemoteAuthentication', () => {
   test('Should call HttpClient with Correct URL', async () => {
     const url = faker.internet.url()
@@ -70,5 +76,17 @@ describe('RemoteAuthentication', () => {
     }
     const promise = sut.auth(authenticationParams)
     await expect(promise).rejects.toThrow(new UnexpectedError())
+  })
+
+  test('Should return an AccountModel if httpPostClient returns 200', async () => {
+    const authenticationParams = mokeAuthentication()
+    const { sut, httpPostClientSpy } = makeSut()
+    const httpResult = mokeHttpResult()
+    httpPostClientSpy.response = {
+      statusCode: HttpStatusCode.ok,
+      body: httpResult
+    }
+    const account = await sut.auth(authenticationParams)
+    expect(account).toEqual(httpResult)
   })
 })
