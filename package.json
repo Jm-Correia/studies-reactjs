@@ -9,6 +9,12 @@
     "test:stage": "npm test -- --findRelatedTests",
     "test:ci": "npm test -- --coverage"
   },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "pre-push": "npm run test:ci"
+    }
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Jm-Correia/studies-reactjs.git"
