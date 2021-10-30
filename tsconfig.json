@@ -18,10 +18,16 @@
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react",
+    "baseUrl": "src",
+    "rootDir": "src",
     "noUnusedLocals": true,
     "noUnusedParameters": true,
+    "paths": {
+      "@/*": [
+        "*"
+      ]
+    },
   },
-  "strict": true,
   "include": [
     "src"
   ]

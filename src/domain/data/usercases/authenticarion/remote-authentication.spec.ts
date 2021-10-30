@@ -1,7 +1,7 @@
 import { RemoteAuthentication } from './remote-authentication'
-import { HttpPostClientSpy } from '../../test/moke-http-client'
+import { HttpPostClientSpy } from '@/domain/data/test/moke-http-client'
 import faker from 'faker'
-import { AuthenticationParams } from '../../../usescases/authentication'
+import { AuthenticationParams } from '@/domain/usescases/authentication'
 
 type SubTypes = {
   sut: RemoteAuthentication
