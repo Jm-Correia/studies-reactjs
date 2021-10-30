@@ -1,11 +1,10 @@
 import { RemoteAuthentication } from './remote-authentication'
-import { HttpPostClientSpy } from '@/domain/data/test/moke-http-client'
-import faker from 'faker'
+import { HttpPostClientSpy } from '@/data/test'
 import { AuthenticationParams } from '@/domain/usescases/authentication'
-import { InvalidCredentialError } from '@/domain/error/invalid-credential-error'
-import { HttpStatusCode } from '@/domain/data/protocols/http/http-response'
-import { UnexpectedError } from '@/domain/error/unexpected-error'
-import { AccountModel } from '@/domain/models/account-model'
+import { HttpStatusCode } from '@/data/protocols/http'
+import { UnexpectedError, InvalidCredentialError } from '@/domain/error'
+import { AccountModel } from '@/domain/models'
+import faker from 'faker'
 
 type SubTypes = {
   sut: RemoteAuthentication
