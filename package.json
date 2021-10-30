@@ -11,17 +11,6 @@
     "test:ci": "npm test -- --coverage",
     "prepare": "husky install"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "pre-push": "npm run test:ci"
-    }
-  },
-  "lint-staged": {
-    "*.{js,ts}": [
-      "eslint --fix"
-    ]
-  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Jm-Correia/studies-reactjs.git"
