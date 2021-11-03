@@ -1,0 +1,21 @@
+@import "../../styles/colors.scss";
+
+
+.inputWrap{
+    margin-top: 0.9em;
+    display: flex;
+    position: relative;
+    align-items: center;
+    margin-bottom: 1em;
+}
+
+input{
+    flex-grow: 1;
+}
+
+.status{
+    position: absolute;
+    right: 0;
+    margin-right: 1em;
+    cursor: help;
+}
