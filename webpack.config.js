@@ -6,9 +6,9 @@ module.exports = {
     mode: 'development',
     entry: './src/main/index.tsx',
     output: {
-        path: path.resolve(__dirname, 'public', 'js'),
+        path: path.join(__dirname, 'public/js'),
         publicPath: '/public/js',
-        fileName: 'bundle.js'
+        filename: 'bundle.js'
     },
     resolve: {
         extensions: ['.ts', '.tsx', '.js', 'scss', 'css'],
@@ -39,9 +39,14 @@ module.exports = {
         ]
     },
     devServer: {
-        contentBase: './public',
-        writeToDisk: true,
-        historyApiFallback: true
+        static: {
+            directory: './public'
+        },
+        devMiddleware: {
+            writeToDisk: true
+        },
+        historyApiFallback: true,
+        port: 8080
     },
     externals: {
         react: 'React',
