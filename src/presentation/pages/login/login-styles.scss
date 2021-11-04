@@ -23,6 +23,17 @@
             text-transform: uppercase;
         }
 
+        .submit{
+            &:disabled {
+                background-color: $disabledBackground;
+                color: $disabledColor;
+
+            &:hover{
+                opacity: 1;
+            }
+            }
+        }
+
         .link{
             text-align: center;
             color: $primary;
