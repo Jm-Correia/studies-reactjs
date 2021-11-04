@@ -3,6 +3,7 @@ import React from 'react'
 import { render, RenderResult, fireEvent, cleanup } from '@testing-library/react'
 import Login from './login'
 import { Validation } from '../../protocols/validation'
+import fake from 'faker'
 
 type SutTypes = {
     sut: RenderResult
@@ -65,19 +66,21 @@ describe('Login Component', () => {
     it('Should call Validation with correct email', () => {
         const { sut, validationSpy } = makeSut()
         const email = sut.getByTestId('email')
-        fireEvent.input(email, { target: { value: 'any_email' } })
+        const any_email = fake.internet.email()
+        fireEvent.input(email, { target: { value: any_email } })
         expect(validationSpy.input).toEqual({
             fieldName: 'email',
-            fieldValue: 'any_email'
+            fieldValue: any_email
         })
     })
     it('Should call Validation with correct password', () => {
         const { sut, validationSpy } = makeSut()
         const password = sut.getByTestId('password')
-        fireEvent.input(password, { target: { value: 'any_password' } })
+        const any_password = fake.internet.password()
+        fireEvent.input(password, { target: { value: any_password } })
         expect(validationSpy.input).toEqual({
             fieldName: 'password',
-            fieldValue: 'any_password'
+            fieldValue: any_password
         })
     })
 })
