@@ -46,7 +46,7 @@ module.exports = {
             writeToDisk: true
         },
         historyApiFallback: true,
-        port: 8080
+        port: 8081
     },
     externals: {
         react: 'React',
