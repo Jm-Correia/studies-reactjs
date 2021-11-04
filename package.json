@@ -23,6 +23,7 @@
   },
   "homepage": "https://github.com/Jm-Correia/studies-reactjs#readme",
   "devDependencies": {
+    "@testing-library/react": "^12.1.2",
     "@types/axios": "^0.14.0",
     "@types/faker": "^5.5.9",
     "@types/jest": "^27.0.2",
