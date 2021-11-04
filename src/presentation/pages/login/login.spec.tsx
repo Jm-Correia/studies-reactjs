@@ -83,4 +83,24 @@ describe('Login Component', () => {
             fieldValue: any_password
         })
     })
+    it('Should Show email error is Validation fails', () => {
+        const { sut, validationSpy } = makeSut()
+        const errorMessage = fake.random.words()
+        validationSpy.errorMessage = errorMessage
+        const email = sut.getByTestId('email')
+        fireEvent.input(email, { target: { value: fake.internet.email() } })
+        const emailStatus = sut.getByTestId('email-status')
+        expect(emailStatus.title).toBe(errorMessage)
+        expect(emailStatus.outerHTML).toContain('#791500')
+    })
+    it('Should Show password error is Validation fails', () => {
+        const { sut, validationSpy } = makeSut()
+        const errorMessage = fake.random.words()
+        validationSpy.errorMessage = errorMessage
+        const password = sut.getByTestId('password')
+        fireEvent.input(password, { target: { value: fake.internet.password() } })
+        const passwordStatus = sut.getByTestId('password-status')
+        expect(passwordStatus.title).toBe(errorMessage)
+        expect(passwordStatus.outerHTML).toContain('#791500')
+    })
 })
