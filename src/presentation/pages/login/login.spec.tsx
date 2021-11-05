@@ -11,15 +11,13 @@ type SutTypes = {
 }
 
 class ValidationSpy implements Validation {
-    errorMessage: string
-    input = {
-        fieldName: '',
-        fieldValue: ''
-    }
+    errorMessage = 'Required field'
+    fieldName: string
+    fieldValue: string
 
     validate(fieldName: string, fieldValue: string): string {
-        this.input.fieldName = fieldName
-        this.input.fieldValue = fieldValue
+        this.fieldName = fieldName
+        this.fieldValue = fieldValue
         return this.errorMessage
     }
 }
@@ -63,26 +61,6 @@ describe('Login Component', () => {
         expect(passwordstatus.outerHTML).toContain('#791500')
     })
 
-    it('Should call Validation with correct email', () => {
-        const { sut, validationSpy } = makeSut()
-        const email = sut.getByTestId('email')
-        const any_email = fake.internet.email()
-        fireEvent.input(email, { target: { value: any_email } })
-        expect(validationSpy.input).toEqual({
-            fieldName: 'email',
-            fieldValue: any_email
-        })
-    })
-    it('Should call Validation with correct password', () => {
-        const { sut, validationSpy } = makeSut()
-        const password = sut.getByTestId('password')
-        const any_password = fake.internet.password()
-        fireEvent.input(password, { target: { value: any_password } })
-        expect(validationSpy.input).toEqual({
-            fieldName: 'password',
-            fieldValue: any_password
-        })
-    })
     it('Should Show email error is Validation fails', () => {
         const { sut, validationSpy } = makeSut()
         const errorMessage = fake.random.words()
@@ -102,5 +80,26 @@ describe('Login Component', () => {
         const passwordStatus = sut.getByTestId('password-status')
         expect(passwordStatus.title).toBe(errorMessage)
         expect(passwordStatus.outerHTML).toContain('#791500')
+    })
+    it('Should not message with password is Validation', () => {
+        const { sut, validationSpy } = makeSut()
+        const errorMessage = ''
+        validationSpy.errorMessage = errorMessage
+        const password = sut.getByTestId('password')
+        fireEvent.input(password, { target: { value: fake.internet.password() } })
+        const passwordStatus = sut.getByTestId('password-status')
+        expect(passwordStatus.title).toBe(errorMessage)
+        expect(passwordStatus.outerHTML).toContain('#1d5530')
+    })
+    it('Should enable button is form is valid', () => {
+        const { sut, validationSpy } = makeSut()
+        const errorMessage = ''
+        validationSpy.errorMessage = errorMessage
+        const password = sut.getByTestId('password')
+        const email = sut.getByTestId('email')
+        fireEvent.input(password, { target: { value: fake.internet.password() } })
+        fireEvent.input(email, { target: { value: fake.internet.email() } })
+        const button = sut.getByTestId('submit') as HTMLButtonElement
+        expect(button.disabled).toBe(false)
     })
 })

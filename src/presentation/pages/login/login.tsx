@@ -16,23 +16,17 @@ const Login: React.FC<Props> = ({ validation }: Props) => {
         email: '',
         password: '',
         errorMessage: '',
-        emailError: 'Required field',
-        passwordError: 'Required field'
+        emailError: '',
+        passwordError: ''
     })
 
     useEffect(() => {
         setState({
             ...state,
-            emailError: validation.validate('email', state.email) || 'Required field'
+            emailError: validation.validate('email', state.email),
+            passwordError: validation.validate('password', state.password)
         })
-    }, [state.email])
-
-    useEffect(() => {
-        setState({
-            ...state,
-            passwordError: validation.validate('password', state.password) || 'Required field'
-        })
-    }, [state.password])
+    }, [state.email, state.password])
 
     return (
         <div className={Styles.login}>
@@ -46,7 +40,7 @@ const Login: React.FC<Props> = ({ validation }: Props) => {
                     <Input placeholder="Typing you password" id="password"
                         name="password" type="password" />
 
-                    <button data-testid='submit' disabled type="submit" className={Styles.submit}>Sign in</button>
+                    <button data-testid='submit' disabled={!!state.emailError || !!state.passwordError} type="submit" className={Styles.submit}>Sign in</button>
                     <span className={Styles.link}>Create your account</span>
                     <Status />
                 </form>
