@@ -1,13 +1,16 @@
 /* eslint-disable space-before-function-paren */
 import React from 'react'
+import fake from 'faker'
 import { render, RenderResult, fireEvent, cleanup } from '@testing-library/react'
 import Login from './login'
 import { Validation } from '../../protocols/validation'
-import fake from 'faker'
+import { Authentication, AuthenticationParams } from '@/domain/usescases/authentication'
+import { AccountModel } from '@/domain/models'
 
 type SutTypes = {
     sut: RenderResult
     validationSpy: ValidationSpy
+    authenticationSpy: AuthenticationSpy
 }
 
 class ValidationSpy implements Validation {
@@ -22,12 +25,29 @@ class ValidationSpy implements Validation {
     }
 }
 
+const mokeAccountModel = (): AccountModel => {
+    return {
+        acessToken: fake.datatype.uuid()
+    }
+}
+
+class AuthenticationSpy implements Authentication {
+    account = mokeAccountModel()
+    params: AuthenticationParams
+    async auth(params: AuthenticationParams): Promise<AccountModel> {
+        this.params = params
+        return Promise.resolve(this.account)
+    }
+}
+
 const makeSut = (): SutTypes => {
     const validationSpy = new ValidationSpy()
-    const sut = render(<Login validation={validationSpy} />)
+    const authenticationSpy = new AuthenticationSpy()
+    const sut = render(<Login validation={validationSpy} authentication={authenticationSpy} />)
     return {
         sut,
-        validationSpy
+        validationSpy,
+        authenticationSpy
     }
 }
 
@@ -114,5 +134,23 @@ describe('Login Component', () => {
         fireEvent.click(button)
         const spinner = sut.getByTestId('spinner')
         expect(spinner).toBeTruthy()
+    })
+    it('Should call authentication with corret values', () => {
+        const { sut, authenticationSpy, validationSpy } = makeSut()
+        const errorMessage = ''
+        validationSpy.errorMessage = errorMessage
+        const emailFake = fake.internet.email()
+        const passwordFake = fake.internet.password()
+        const passwordInput = sut.getByTestId('password')
+        const emailInput = sut.getByTestId('email')
+        fireEvent.input(passwordInput, { target: { value: passwordFake } })
+        fireEvent.input(emailInput, { target: { value: emailFake } })
+        const button = sut.getByTestId('submit')
+        fireEvent.click(button)
+
+        expect(authenticationSpy.params).toEqual({
+            email: emailFake,
+            password: passwordFake
+        })
     })
 })
