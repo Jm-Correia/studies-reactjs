@@ -1,11 +1,12 @@
 /* eslint-disable space-before-function-paren */
 import React from 'react'
 import fake from 'faker'
-import { render, RenderResult, fireEvent, cleanup } from '@testing-library/react'
+import { render, RenderResult, fireEvent, cleanup, waitFor } from '@testing-library/react'
 import Login from './login'
 import { Validation } from '../../protocols/validation'
 import { Authentication, AuthenticationParams } from '@/domain/usescases/authentication'
 import { AccountModel } from '@/domain/models'
+import { InvalidCredentialError } from '@/domain/error'
 
 type SutTypes = {
     sut: RenderResult
@@ -182,5 +183,29 @@ describe('Login Component', () => {
         fireEvent.input(emailInput, { target: { value: emailFake } })
         fireEvent.submit(sut.getByTestId('form'))
         expect(authenticationSpy.callsCount).toBe(0)
+    })
+    it('Should show error if authentication falis.', async () => {
+        const { sut, authenticationSpy, validationSpy } = makeSut()
+        const error = new InvalidCredentialError()
+        jest.spyOn(authenticationSpy, 'auth')
+            .mockReturnValueOnce(Promise.reject(error))
+        const errorMessage = ''
+        validationSpy.errorMessage = errorMessage
+
+        const emailFake = fake.internet.email()
+        const passwordFake = fake.internet.password()
+
+        const passwordInput = sut.getByTestId('password')
+        const emailInput = sut.getByTestId('email')
+
+        fireEvent.input(passwordInput, { target: { value: passwordFake } })
+        fireEvent.input(emailInput, { target: { value: emailFake } })
+        const button = sut.getByTestId('submit')
+        fireEvent.click(button)
+        const errorWrap = sut.getByTestId('error-wrap')
+        await waitFor(() => errorWrap)
+        const mainError = sut.getByTestId('main-error')
+        expect(mainError.textContent).toBe(error.message)
+        expect(errorWrap.childElementCount).toBe(1)
     })
 })
