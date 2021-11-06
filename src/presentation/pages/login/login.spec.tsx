@@ -1,5 +1,7 @@
 /* eslint-disable space-before-function-paren */
 import React from 'react'
+import { Router } from 'react-router-dom'
+import { createMemoryHistory } from 'history'
 import fake from 'faker'
 import 'jest-localstorage-mock'
 import { render, RenderResult, fireEvent, cleanup, waitFor } from '@testing-library/react'
@@ -44,10 +46,15 @@ class AuthenticationSpy implements Authentication {
     }
 }
 
+const history = createMemoryHistory({ initialEntries: ['/login'] })
 const makeSut = (): SutTypes => {
     const validationSpy = new ValidationSpy()
     const authenticationSpy = new AuthenticationSpy()
-    const sut = render(<Login validation={validationSpy} authentication={authenticationSpy} />)
+    const sut = render(
+        <Router history={history}>
+            <Login validation={validationSpy} authentication={authenticationSpy} />
+        </Router >
+    )
     return {
         sut,
         validationSpy,
@@ -230,5 +237,15 @@ describe('Login Component', () => {
         fireEvent.click(button)
         await waitFor(() => sut.getAllByTestId('form'))
         expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', authenticationSpy.account.acessToken)
+        expect(history.length).toBe(1)
+        expect(history.location.pathname).toBe('/')
+    })
+
+    it('Should redirect user to signup page.', () => {
+        const { sut } = makeSut()
+        const createAccount = sut.getByTestId('create-account')
+        fireEvent.click(createAccount)
+        expect(history.length).toBe(2)
+        expect(history.location.pathname).toBe('/signup')
     })
 })
