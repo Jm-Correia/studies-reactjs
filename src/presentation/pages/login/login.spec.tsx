@@ -34,8 +34,10 @@ const mokeAccountModel = (): AccountModel => {
 class AuthenticationSpy implements Authentication {
     account = mokeAccountModel()
     params: AuthenticationParams
+    callsCount = 0
     async auth(params: AuthenticationParams): Promise<AccountModel> {
         this.params = params
+        this.callsCount++
         return Promise.resolve(this.account)
     }
 }
@@ -152,5 +154,22 @@ describe('Login Component', () => {
             email: emailFake,
             password: passwordFake
         })
+    })
+
+    it('Should call authentication only once', () => {
+        const { sut, authenticationSpy, validationSpy } = makeSut()
+        const errorMessage = ''
+        validationSpy.errorMessage = errorMessage
+        const emailFake = fake.internet.email()
+        const passwordFake = fake.internet.password()
+        const passwordInput = sut.getByTestId('password')
+        const emailInput = sut.getByTestId('email')
+        fireEvent.input(passwordInput, { target: { value: passwordFake } })
+        fireEvent.input(emailInput, { target: { value: emailFake } })
+        const button = sut.getByTestId('submit')
+        fireEvent.click(button)
+        fireEvent.click(button)
+
+        expect(authenticationSpy.callsCount).toBe(1)
     })
 })
