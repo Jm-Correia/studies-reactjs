@@ -1,6 +1,7 @@
 /* eslint-disable space-before-function-paren */
 import React from 'react'
 import fake from 'faker'
+import 'jest-localstorage-mock'
 import { render, RenderResult, fireEvent, cleanup, waitFor } from '@testing-library/react'
 import Login from './login'
 import { Validation } from '../../protocols/validation'
@@ -56,6 +57,9 @@ const makeSut = (): SutTypes => {
 
 describe('Login Component', () => {
     afterEach(cleanup)
+    beforeEach(() => {
+        localStorage.clear()
+    })
 
     it('Should start with initial state', () => {
         const { getByTestId } = makeSut().sut
@@ -184,7 +188,7 @@ describe('Login Component', () => {
         fireEvent.submit(sut.getByTestId('form'))
         expect(authenticationSpy.callsCount).toBe(0)
     })
-    it('Should show error if authentication falis.', async () => {
+    it('Should show error if authentication fails.', async () => {
         const { sut, authenticationSpy, validationSpy } = makeSut()
         const error = new InvalidCredentialError()
         jest.spyOn(authenticationSpy, 'auth')
@@ -207,5 +211,24 @@ describe('Login Component', () => {
         const mainError = sut.getByTestId('main-error')
         expect(mainError.textContent).toBe(error.message)
         expect(errorWrap.childElementCount).toBe(1)
+    })
+    it('Should add access Token to localstorage on sucess.', async () => {
+        const { sut, authenticationSpy, validationSpy } = makeSut()
+
+        const errorMessage = ''
+        validationSpy.errorMessage = errorMessage
+
+        const emailFake = fake.internet.email()
+        const passwordFake = fake.internet.password()
+
+        const passwordInput = sut.getByTestId('password')
+        const emailInput = sut.getByTestId('email')
+
+        fireEvent.input(passwordInput, { target: { value: passwordFake } })
+        fireEvent.input(emailInput, { target: { value: emailFake } })
+        const button = sut.getByTestId('submit')
+        fireEvent.click(button)
+        await waitFor(() => sut.getAllByTestId('form'))
+        expect(localStorage.setItem).toHaveBeenCalledWith('accessToken', authenticationSpy.account.acessToken)
     })
 })
