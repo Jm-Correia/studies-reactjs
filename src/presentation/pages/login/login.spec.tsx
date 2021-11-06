@@ -172,4 +172,15 @@ describe('Login Component', () => {
 
         expect(authenticationSpy.callsCount).toBe(1)
     })
+
+    it('Should not call authentication if the form is invalid.', () => {
+        const { sut, authenticationSpy, validationSpy } = makeSut()
+        const errorMessage = 'Require field.'
+        validationSpy.errorMessage = errorMessage
+        const emailFake = fake.internet.email()
+        const emailInput = sut.getByTestId('email')
+        fireEvent.input(emailInput, { target: { value: emailFake } })
+        fireEvent.submit(sut.getByTestId('form'))
+        expect(authenticationSpy.callsCount).toBe(0)
+    })
 })
