@@ -8,11 +8,11 @@ describe('RequiredFieldValidation', () => {
     it('Should return error is field is empty', () => {
         const sut = makeSut()
         const error = new RequiredFieldError()
-        expect(sut.validade('')).toEqual(error)
+        expect(sut.validate('')).toEqual(error)
     })
 
     it('Should return falsy is field is not empty', () => {
         const sut = makeSut()
-        expect(sut.validade(faker.random.word())).toBeFalsy()
+        expect(sut.validate(faker.random.word())).toBeFalsy()
     })
 })
